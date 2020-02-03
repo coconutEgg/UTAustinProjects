@@ -1,0 +1,11 @@
+Project 1 is due on February 4th, 23:59 CST  or February 5th, 05:59 UTC  and You have to submit in CANVAS
+You will be submitting the following three files:
+reverse.zip
+It should contain your solution and miscellaneous test files. (Maintain the same directory structure)
+Generated binary files should not be present.
+The entire folder should be 'zip'-ed, including 'tests', 'tester' and 'test - script.sh' ;
+utilities.zip
+Same rules as above.
+A .txt file ('TestCase_Results.txt') mentioning the number of test cases succeeded for each part.
+Before creating the zip archive, do 'make clean' to clean the generated binaries.
+For each day a project is late, you lose 5% of the points for that project. So if you submit two days after the deadline, your maximum points on that project will be 90%.
