@@ -16,6 +16,7 @@
 #define DEFAULTPATHN 2
 
 //#define TESTON 1
+#define BUFFSZ 1024
 
 typedef struct _path_manager
 {
@@ -62,7 +63,7 @@ void destroy_path_manager(PathManager *ppm)
 #endif
 }
 
-int update_path(PathManager *ppm, const char *paths[], const int npaths)
+int update_path(PathManager *ppm, char *paths[], const int npaths)
 {
     //according to the requirement, we should overwrite the old path
     if (ppm == NULL)
@@ -82,8 +83,9 @@ int update_path(PathManager *ppm, const char *paths[], const int npaths)
 #ifdef TESTON
         printf("path added\n");
 #endif
-        ppm->npath++;
     };
+
+    ppm->npath = npaths;
 
     return 1;
 }
@@ -100,8 +102,37 @@ void print_paths(PathManager *ppm) //for test purpose, dup2() to other fd
 
 void reset_path_manager(PathManager *ppm) //reset the path manager to be the default
 {
-    const char *paths[2] = {"/bin", "/usr/bin"};
+    char *paths[2];
+    paths[0] = (char*)malloc(BUFFSZ);
+    paths[1] = (char*)malloc(BUFFSZ);
+    strcpy(paths[0], PATH01);
+    strcpy(paths[1], PATH02);
     update_path(ppm, paths, DEFAULTPATHN);
+}
+
+char* PathManager_has(PathManager *ppm, char* filename)
+{
+    if(access(filename, X_OK)!=-1)
+    {
+        return filename;
+    }
+
+    char *abs_path = (char*)malloc(BUFFSZ);
+    bzero(abs_path,BUFFSZ);
+    for(int i = 0 ; i < ppm->npath; i ++ )
+    {
+        strcat( abs_path, ppm->paths[i]);
+        strcat( abs_path, "/");
+        strcat( abs_path, filename);
+
+        if(access(abs_path, X_OK) != -1)
+        {
+            return abs_path;
+        }
+        bzero(abs_path,BUFFSZ);
+    }
+
+    return NULL;
 }
 
 #endif

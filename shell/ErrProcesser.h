@@ -9,7 +9,7 @@
 #define ERRMSGSZ 128
 
 
-#define BASICERR    "An error has occurred"
+#define BASICERR    "An error has occurred\n"
 #define ACCESSERR   "%s: cannot access '%s': No such file or directory\n"
 
 #define BASICERRFLAG 0
