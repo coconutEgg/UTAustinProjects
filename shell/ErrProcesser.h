@@ -12,6 +12,8 @@
 #define BASICERR    "An error has occurred\n"
 #define ACCESSERR   "%s: cannot access '%s': No such file or directory\n"
 
+#define BLANK ""
+
 #define BASICERRFLAG 0
 #define ACCESSERRFLAG 1
 

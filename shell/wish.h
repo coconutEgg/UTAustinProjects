@@ -56,8 +56,6 @@
 //Add your code here
 #define BUFFSZ 1024 //default buff size
 #define MAXARGC 32  //max arg count
-#define LBUFFSZ 4096
-#define ERRMSG "An error has occurred"
 
 #define SEPERATORS1 " \n\t\r"
 #define SEPERATORS2 " \n\t\r"
@@ -151,9 +149,6 @@ int parser(const char *seps, int flag)
 
 void process_ls(int cnt)
 {
-    int fd;
-    int saveout = 0;
-    int saveerr = 0;
     char buf[4];
     strcpy(buf, "ls");
     char *abs_name = PathManager_has(pm, buf);
@@ -172,20 +167,7 @@ void process_ls(int cnt)
         }
         else if (pid == 0)
         {
-            if (found == 1)
-            {
-                fd = open(OUTTGT, O_RDWR | O_CREAT, 0664);
-                saveout = dup(fileno(stdout));
-                saveerr = dup(fileno(stderr));
-                if (dup2(fd, fileno(stdout)) == -1)
-                {
-                    printf("dup2 err");
-                };
-                if (dup2(fd, fileno(stderr)) == -1)
-                {
-                    printf("dup2 err");
-                };
-            }
+
             if (cnt == 1)
             {
                 if (myargs[1] != NULL)
@@ -202,15 +184,6 @@ void process_ls(int cnt)
             {
                 strcpy(myargs[0], abs_name);
                 execvp(myargs[0], myargs);
-                dup2(saveout, fileno(stdout));
-                dup2(saveerr, fileno(stderr));
-            }
-            if (found == 1)
-            {
-                dup2(saveout, fileno(stdout));
-                dup2(saveout, fileno(stderr));
-                close(saveout);
-                close(saveerr);
             }
             exit(1);
         }
@@ -430,3 +403,5 @@ void execute(int narg)
 }
 
 #endif
+
+

@@ -6,18 +6,29 @@
 #define _PATHMANAGER_H_
 
 #include "wish.h"
-
 #include <unistd.h>
 #include <stdlib.h>
-
 #define MAXPATHN 128 //max path number
 #define PATH01 "/bin"
-#define PATH02 "/uer/bin"
+#define PATH02 "/user/bin"
 #define DEFAULTPATHN 2
-
 //#define TESTON 1
 #define BUFFSZ 1024
 
+
+
+//@protypes
+typedef struct _path_manager PathManager;
+void build_path_manager(PathManager **ppm);
+void destroy_path_manager(PathManager *ppm);
+int update_path(PathManager *ppm, char *paths[], const int npaths);
+void print_paths(PathManager *ppm) ;
+void reset_path_manager(PathManager *ppm);
+char* PathManager_has(PathManager *ppm, char* filename);
+
+
+
+//@Header-Only Implementations
 typedef struct _path_manager
 {
     int npath;
@@ -27,17 +38,12 @@ typedef struct _path_manager
 
 void build_path_manager(PathManager **ppm)
 {
-    *ppm = (PathManager *)malloc(sizeof(PathManager));
+    *ppm = (PathManager *)malloc(sizeof(PathManager)+1);
     if (ppm == NULL)
     {
         err_msg(STDERR_FILENO, errno, "build_path_manager() failed%\n");
         return;
     }
-
-#ifdef TESTON
-    printf("path initialized");
-#endif
-
     (*ppm)->npath = 0;
     return;
 };
@@ -50,17 +56,11 @@ void destroy_path_manager(PathManager *ppm)
         {
             free(ppm->paths[i]);
 
-#ifdef TESTON
-            printf("path %d destroyed\n", i);
-#endif
         }
     }
     free(ppm);
     ppm = NULL;
 
-#ifdef TESTON
-    printf("path manager destroyed\n");
-#endif
 }
 
 int update_path(PathManager *ppm, char *paths[], const int npaths)
@@ -80,9 +80,6 @@ int update_path(PathManager *ppm, char *paths[], const int npaths)
             err_msg(STDERR_FILENO, errno, "---update_path()");
             exit(0);
         };
-#ifdef TESTON
-        printf("path added\n");
-#endif
     };
 
     ppm->npath = npaths;
@@ -112,10 +109,10 @@ void reset_path_manager(PathManager *ppm) //reset the path manager to be the def
 
 char* PathManager_has(PathManager *ppm, char* filename)
 {
-    if(access(filename, X_OK)!=-1)
-    {
-        return filename;
-    }
+    // if(access(filename, X_OK)!=-1)
+    // {
+    //     return NULL;
+    // }
 
     char *abs_path = (char*)malloc(BUFFSZ);
     bzero(abs_path,BUFFSZ);
@@ -131,7 +128,6 @@ char* PathManager_has(PathManager *ppm, char* filename)
         }
         bzero(abs_path,BUFFSZ);
     }
-
     return NULL;
 }
 
